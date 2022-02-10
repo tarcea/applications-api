@@ -1,11 +1,26 @@
-import express from 'express';
+const axios = require('axios');
+const cors = require('cors');
+const express = require('express');
 
 const app = express();
 app.use(express.json());
+app.use(cors());
 
-app.post('/api/applications', (req, res) => {
+app.post('/api/applications', async (req, res) => {
   const { first_name, last_name } = req.body;
-  return res.json({});
+  // const application = await axios.post(
+  //   'http://localhost:8000/api/applications',
+  //   req.body
+  // );
+
+  // const job = await axios.get(
+  //   `http://localhost:8000/api/jobs?application_id=${id}`
+  // );
+
+  return res.json({
+    application: req.body,
+    message: 'application created',
+  });
 });
 
-export default app;
+module.exports = app;

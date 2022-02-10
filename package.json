@@ -1,11 +1,10 @@
 {
-  "type": "module",
   "name": "applications-api",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "NODE_OPTIONS=--experimental-vm-modules npx jest",
+    "test": "jest --watch",
     "start": "node index.js",
     "dev": "nodemon index.js"
   },
@@ -13,6 +12,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "axios": "^0.25.0",
+    "cors": "^2.8.5",
     "express": "^4.17.2"
   },
   "devDependencies": {
