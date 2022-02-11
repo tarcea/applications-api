@@ -1,7 +1,9 @@
 const { Pool } = require('pg');
 const dotenv = require('dotenv').config();
 
-const pool = new Pool({
+const env = process.env.NODE_ENV;
+
+const poolProd = new Pool({
   user: process.env.DB_USER,
   host: process.env.DB_HOST,
   database: process.env.DB_NAME,
@@ -11,6 +13,20 @@ const pool = new Pool({
   idleTimeoutMillis: 30000,
   connectionTimeoutMillis: 2000,
 });
+
+const poolTest = new Pool({
+  user: process.env.DB_USER_TEST,
+  host: process.env.DB_HOST_TEST,
+  database: process.env.DB_NAME_TEST,
+  password: process.env.DB_PASSWORD_TEST,
+  port: 5432,
+  max: 20,
+  idleTimeoutMillis: 30000,
+  connectionTimeoutMillis: 2000,
+});
+
+const pool = env === 'test' ? poolTest : poolProd;
+
 pool.connect();
 
 module.exports = {

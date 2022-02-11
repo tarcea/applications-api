@@ -8,6 +8,9 @@
   "servers": [
     {
       "url": "https://localhost:8080/"
+    },
+    {
+      "url": "https://gt-applications-api.herokuapp.com"
     }
   ],
   "tags": [

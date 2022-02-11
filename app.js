@@ -18,41 +18,70 @@ const getJobStatus = async (id) => {
   return job.data.status;
 };
 
-app.post('/api/applications', async (req, res, next) => {
-  // res.setHeader('Transfer-Encodding', 'chunked');
-  const application = await axios.post(`${apiBaseURL}/api/applications`, {
-    ...req.body,
-    id: uuidv4(),
-  });
+const checkIfValidUUID = (str) => {
+  const regexExp =
+    /^[0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12}$/gi;
+  return regexExp.test(str);
+};
 
-  let jobStatus;
-  jobStatus = await getJobStatus(application.data.id);
-  while (jobStatus === 'pending') {
+app.post('/api/applications', async (req, res) => {
+  try {
+    const { first_name, last_name } = req.body;
+    if (!first_name || !last_name) {
+      res
+        .status(400)
+        .json({ message: 'first_name and last_name required both' });
+    }
+    const application = await axios.post(`${apiBaseURL}/api/applications`, {
+      ...req.body,
+      id: uuidv4(),
+    });
+
+    let jobStatus;
     jobStatus = await getJobStatus(application.data.id);
-  }
-  await addApplication({ ...application.data, status: jobStatus });
+    while (jobStatus === 'pending') {
+      jobStatus = await getJobStatus(application.data.id);
+    }
+    await addApplication({ ...application.data, status: jobStatus });
 
-  return res.json({
-    application_id: application.data.id,
-    message: 'application created',
-  });
+    return res.json({
+      application_id: application.data.id,
+      message: 'application created',
+    });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
 });
 
 app.get('/api/applications/:id', async (req, res) => {
-  const { id } = req.params;
-  if (!id) {
-    console.log('no id');
-    res.status(404).json({ message: 'please provide an id' });
-    return;
+  try {
+    const { id } = req.params;
+    if (!checkIfValidUUID(id)) {
+      res.status(400).json({ message: 'id is not in UUID format' });
+      return;
+    }
+    const application = await getApplicationsById(id);
+    res.json(application);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
   }
-  const application = await getApplicationsById(id);
-  res.json(application);
 });
 
 app.get('/api/applications', async (req, res) => {
-  const { status } = req.query;
-  const applications = await getApplicationsByStatus(status);
-  res.json(applications);
+  try {
+    const { status } = req.query;
+
+    if (status !== 'rejected' && status !== 'completed') {
+      res
+        .status(400)
+        .json({ message: 'status should be rejected or completed' });
+      return;
+    }
+    const applications = await getApplicationsByStatus(status);
+    res.json(applications);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
 });
 
 module.exports = app;

@@ -26,19 +26,19 @@ it('return a message when an application was created', (done) => {
       done();
     });
 }, 20000);
-it('call the external api to create the application', (done) => {
-  const res = { first_name: 'john', last_name: 'snow' };
-  request(app)
-    .post('/api/applications')
-    .send({
-      first_name: 'john',
-      last_name: 'snow',
-    })
-    .then((response) => {
-      // console.log(response.body.application);
-      expect(JSON.stringify(response.body.application)).toBe(
-        JSON.stringify(res)
-      );
-      done();
-    });
-}, 55000);
+// it('call the external api to create the application', (done) => {
+//   const res = { first_name: 'john', last_name: 'snow' };
+//   request(app)
+//     .post('/api/applications')
+//     .send({
+//       first_name: 'john',
+//       last_name: 'snow',
+//     })
+//     .then((response) => {
+//       // console.log(response.body.application);
+//       expect(JSON.stringify(response.body.application)).toBe(
+//         JSON.stringify(res)
+//       );
+//       done();
+//     });
+// }, 55000);
