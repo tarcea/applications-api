@@ -12,7 +12,7 @@ it('should respond with a 200 status code', (done) => {
       expect(response.status).toBe(200);
       done();
     });
-});
+}, 20000);
 
 it('return a message when an application was created', (done) => {
   request(app)
@@ -25,7 +25,7 @@ it('return a message when an application was created', (done) => {
       expect(response.body.message).toBe('application created');
       done();
     });
-});
+}, 20000);
 it('call the external api to create the application', (done) => {
   const res = { first_name: 'john', last_name: 'snow' };
   request(app)
@@ -41,4 +41,4 @@ it('call the external api to create the application', (done) => {
       );
       done();
     });
-});
+}, 55000);
