@@ -1,0 +1,195 @@
+openapi: 3.0.0
+info:
+  version: 0.0.2
+  title: API-Applications
+  description: |
+    An API for creating customer applications.
+servers:
+  - url: https://localhost:8080
+  - url: https://gt-applications-api.herokuapp.com
+tags:
+  - name: Applications
+    description: An application is the intent of a customer to get a loan.
+paths:
+  /api/applications:
+    post:
+      tags:
+        - Applications
+      summary: Create an application
+      operationId: addApplication
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/addApplication'
+        required: true
+      responses:
+        '201':
+          description: application created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/addApplicationResponse'
+        '400':
+          description: missing first_name or last_name
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AddError'
+    get:
+      tags:
+        - Applications
+      summary: Get applications by status
+      operationId: getApplicationByStatus
+      parameters:
+        - name: status
+          in: query
+          description: status of the application
+          required: true
+          schema:
+            type: string
+            enum:
+              - completed
+              - rejected
+      responses:
+        '200':
+          description: applications retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/getByStatusResponse'
+        '400':
+          description: failed to get applications, the query param was not provided / not a valid value [completed, rejected, ]
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/byStatusError'
+  /api/applications/{id}:
+    get:
+      tags:
+        - Applications
+      summary: Get application by id
+      operationId: getApplicationById
+      parameters:
+        - name: id
+          in: path
+          description: ID of the application
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: application retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/getByIdResponse'
+        '400':
+          description: failed to get application, the id was not provided / not a valid UUID
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/byIdError'
+        '404':
+          description: failed to get the application, the id doesn't exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/byId404Error'
+components:
+  schemas:
+    addApplication:
+      type: object
+      properties:
+        first_name:
+          type: string
+          example: John
+        last_name:
+          type: string
+          example: Doe
+      required:
+        - first_name
+        - last_name
+    addApplicationResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: 372c3849-a01b-4eb3-8c18-6f32f0b588ef
+        status:
+          type: string
+          enum:
+            - completed
+            - rejected
+        first_name:
+          type: string
+          example: John
+        last_name:
+          type: string
+          example: Doe
+    getByIdResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: 0e68803a-6dc9-4ef4-81b3-d6f6786ebb44
+        status:
+          type: string
+          enum:
+            - rejected
+            - completed
+        first_name:
+          type: string
+          example: Anna
+        last_name:
+          type: string
+          example: Smith
+    getByStatusResponse:
+      type: array
+      items:
+        type: object
+        properties:
+          id:
+            type: string
+            format: uuid
+            example: 0e68803a-6dc9-4ef4-81b3-d6f6786ebb44
+          status:
+            type: string
+            enum:
+              - rejected
+              - completed
+          first_name:
+            type: string
+            example: Anna
+          last_name:
+            type: string
+            example: Smith
+    AddError:
+      type: object
+      properties:
+        error:
+          type: string
+          example: first_name and last_name required both
+    byIdError:
+      type: object
+      properties:
+        error:
+          type: string
+          format: uuid
+          example: id is missing or is not in UUID format
+    byId404Error:
+      type: object
+      properties:
+        error:
+          type: string
+          format: uuid
+          example: failed to get application, the id doesn't exist.
+    byStatusError:
+      type: object
+      properties:
+        error:
+          type: string
+          example: status should be rejected or completed
