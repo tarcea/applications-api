@@ -18,4 +18,8 @@ module.exports = {
     const { rows } = await db.query(db.GET_APPLICATIONS_BY_STATUS, [status]);
     return rows;
   },
+  updateStatus: async (id, status) => {
+    await db.query(db.UPDATE_STATUS, [id, status]);
+    return;
+  },
 };

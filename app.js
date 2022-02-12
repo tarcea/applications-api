@@ -8,11 +8,11 @@ const {
   getApplicationsByStatus,
   getApplicationsById,
 } = require('./src/actions');
+const checkStatus = require('./middlewares/checkStatus');
 
 const app = express();
 app.use(express.json());
 app.use(cors());
-const env = process.env.NODE_ENV;
 const apiBaseURL = 'http://localhost:8000';
 
 const checkIfValidUUID = (str) => {
@@ -21,48 +21,26 @@ const checkIfValidUUID = (str) => {
   return regexExp.test(str);
 };
 
-const getJobStatus = async (id) => {
-  const job = await axios.get(`${apiBaseURL}/api/jobs?application_id=${id}`);
-  return job.data.status;
-};
-
-app.post('/api/applications', async (req, res) => {
+app.post('/api/applications', checkStatus, async (req, res) => {
   try {
     const { first_name, last_name } = req.body;
     if (!first_name || !last_name) {
       res.status(400).json({ error: 'first_name and last_name required both' });
     }
-    const application = await axios.post(
-      `${apiBaseURL}/api/applications`,
-      {
-        ...req.body,
-        id: uuidv4(),
-      },
-      {
-        headers: {
-          'Content-type': 'application/json; charset=UTF-8',
-        },
-        proxy: {
-          host: 'localhost',
-          port: 8000,
-        },
-      }
-    );
+    const application = await axios.post(`${apiBaseURL}/api/applications`, {
+      ...req.body,
+      id: uuidv4(),
+    });
 
-    let jobStatus;
-    jobStatus = await getJobStatus(application.data.id);
-    while (jobStatus === 'pending') {
-      jobStatus = await getJobStatus(application.data.id);
-    }
-    await addApplication({ ...application.data, status: jobStatus });
+    await addApplication(application.data);
 
-    return res.status(201).json({ ...application.data, status: jobStatus });
+    return res.status(201).json(application.data);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
 
-app.get('/api/applications/:id', async (req, res) => {
+app.get('/api/applications/:id', checkStatus, async (req, res) => {
   try {
     const { id } = req.params;
     if (!checkIfValidUUID(id)) {
@@ -79,10 +57,9 @@ app.get('/api/applications/:id', async (req, res) => {
   }
 });
 
-app.get('/api/applications', async (req, res) => {
+app.get('/api/applications', checkStatus, async (req, res) => {
   try {
     const { status } = req.query;
-
     if (status !== 'rejected' && status !== 'completed') {
       res
         .status(400)

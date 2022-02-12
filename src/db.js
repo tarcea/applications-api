@@ -39,4 +39,7 @@ module.exports = {
   WHERE id = $1`,
   GET_APPLICATIONS_BY_STATUS: `select * from apps
     WHERE status = $1`,
+  UPDATE_STATUS: `UPDATE apps
+  SET status = $2
+  WHERE id = $1`,
 };

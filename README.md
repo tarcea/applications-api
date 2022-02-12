@@ -2,6 +2,10 @@
 
 ![](https://cdn.lendo.se/v4/svg/logodark.svg)
 
+## Tech Stack
+
+> Node, Express
+
 ## API documentation:
 
 https://app.swaggerhub.com/apis-docs/tarcea/applicatins-api/0.0.2
