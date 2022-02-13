@@ -8,12 +8,12 @@ const {
   getApplicationsByStatus,
   getApplicationsById,
 } = require('./src/actions');
-const checkStatus = require('./middlewares/checkStatus');
+const { checkStatus, tunnel } = require('./middlewares/checkStatus');
 
 const app = express();
 app.use(express.json());
 app.use(cors());
-const apiBaseURL = 'http://localhost:8000';
+// const apiBaseURL = 'http://localhost:8000';
 
 const checkIfValidUUID = (str) => {
   const regexExp =
@@ -23,6 +23,7 @@ const checkIfValidUUID = (str) => {
 
 app.post('/api/applications', checkStatus, async (req, res) => {
   try {
+    const apiBaseURL = await tunnel();
     const { first_name, last_name } = req.body;
     if (!first_name || !last_name) {
       res.status(400).json({ error: 'first_name and last_name required both' });
