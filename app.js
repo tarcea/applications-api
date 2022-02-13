@@ -34,7 +34,9 @@ app.post('/api/applications', checkStatus, async (req, res) => {
 
     await addApplication(application.data);
 
-    return res.status(201).json(application.data);
+    return res
+      .status(201)
+      .json({ ...application.data, message: 'application created' });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -53,7 +55,7 @@ app.get('/api/applications/:id', checkStatus, async (req, res) => {
     }
     res.json(application);
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    res.status(500).json({ error: err.message });
   }
 });
 
@@ -69,7 +71,7 @@ app.get('/api/applications', checkStatus, async (req, res) => {
     const applications = await getApplicationsByStatus(status);
     res.json(applications);
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    res.status(500).json({ error: err.message });
   }
 });
 
