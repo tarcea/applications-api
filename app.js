@@ -2,18 +2,18 @@ const axios = require('axios');
 const { v4: uuidv4 } = require('uuid');
 const cors = require('cors');
 const express = require('express');
-
+const { checkStatus } = require('./src/checkStatus');
 const {
   addApplication,
   getApplicationsByStatus,
   getApplicationsById,
 } = require('./src/actions');
-const { checkStatus, tunnel } = require('./middlewares/checkStatus');
 
 const app = express();
+
 app.use(express.json());
 app.use(cors());
-// const apiBaseURL = 'http://localhost:8000';
+const apiBaseURL = 'http://localhost:8000';
 
 const checkIfValidUUID = (str) => {
   const regexExp =
@@ -21,17 +21,33 @@ const checkIfValidUUID = (str) => {
   return regexExp.test(str);
 };
 
-app.post('/api/applications', checkStatus, async (req, res) => {
+const pollDB = setInterval(() => {
+  checkStatus();
+}, 25 * 1000);
+// setTimeout(async () => await checkStatus(), 25 * 1000);
+// clearInterval(pollDB);
+
+app.post('/api/applications', async (req, res) => {
   try {
-    const apiBaseURL = await tunnel();
+    // const apiBaseURL = await tunnel();
     const { first_name, last_name } = req.body;
     if (!first_name || !last_name) {
       res.status(400).json({ error: 'first_name and last_name required both' });
     }
-    const application = await axios.post(`${apiBaseURL}/api/applications`, {
-      ...req.body,
-      id: uuidv4(),
-    });
+    const application = await axios.post(
+      `${apiBaseURL}/api/applications`,
+      {
+        ...req.body,
+        id: uuidv4(),
+      },
+      {
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Methods': 'GET,POST,DELETE',
+          'Access-Control-Allow-Credentials': true,
+        },
+      }
+    );
 
     await addApplication(application.data);
 
@@ -43,7 +59,7 @@ app.post('/api/applications', checkStatus, async (req, res) => {
   }
 });
 
-app.get('/api/applications/:id', checkStatus, async (req, res) => {
+app.get('/api/applications/:id', async (req, res) => {
   try {
     const { id } = req.params;
     if (!checkIfValidUUID(id)) {
@@ -60,7 +76,7 @@ app.get('/api/applications/:id', checkStatus, async (req, res) => {
   }
 });
 
-app.get('/api/applications', checkStatus, async (req, res) => {
+app.get('/api/applications', async (req, res) => {
   try {
     const { status } = req.query;
     if (status !== 'rejected' && status !== 'completed') {

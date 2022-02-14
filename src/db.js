@@ -43,4 +43,7 @@ module.exports = {
   UPDATE_STATUS: `UPDATE apps
   SET status = $2
   WHERE id = $1`,
+  DELETE_APPLICATION: `DELETE from apps
+  WHERE id = $1
+  `,
 };

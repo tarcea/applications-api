@@ -22,4 +22,7 @@ module.exports = {
     await db.query(db.UPDATE_STATUS, [id, status]);
     return;
   },
+  deleteApplication: async (id) => {
+    await db.query(db.DELETE_APPLICATION, [id]);
+  },
 };
