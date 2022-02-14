@@ -4,7 +4,7 @@
 
 ## Tech Stack
 
-> Node, Express
+> Node, Express, PostgreSQL
 
 ## API documentation:
 
