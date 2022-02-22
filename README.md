@@ -30,7 +30,8 @@ https://gt-applications-api.herokuapp.com
 ### POST an application
 
 Post works just in localhost:
-- clone the repo, install dependencies and insert a .env file in the root directory with the next content filled out with real data from an ElephantSQL database (https://www.elephantsql.com/):
+- assure that Lendo's API is running on port 8000
+- clone this repo, install dependencies and insert a .env file in the root directory with the next content filled out with real data from an ElephantSQL database (https://www.elephantsql.com/):
 
 ```bash
 
@@ -44,7 +45,6 @@ DB_NAME_TEST=
 DB_PASSWORD_TEST=
 
 ```
-
 - start the project 
 
 ```bash
