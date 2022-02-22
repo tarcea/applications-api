@@ -8,7 +8,7 @@
 
 ## API documentation:
 
-https://app.swaggerhub.com/apis-docs/tarcea/applicatins-api/0.0.2
+https://app.swaggerhub.com/apis-docs/tarcea/applicatins-api-002/0.0.2
 
 ## Deployed version:
 
