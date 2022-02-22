@@ -50,4 +50,8 @@ DB_PASSWORD_TEST=
 ```bash
 npm run dev 
 ```
-- the project is running on port 8080, use Postman to post applications
+- the project is running on port 8080, use Postman to post applications at:
+
+```bash
+http://localhost:8080/api/applications
+```
