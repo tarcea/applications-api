@@ -1,6 +1,6 @@
 # Applications API
 
-![](https://www.svgrepo.com/show/68289/bag.svg)
+![](https://www.svgrepo.com/show/194681/shopping-bag-shopper.svg)
 
 ## Tech Stack
 
