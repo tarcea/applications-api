@@ -1,6 +1,6 @@
 # Applications API
 
-![](https://cdn.lendo.se/v4/svg/logodark.svg)
+![](https://www.svgrepo.com/show/427679/bag-outline-red-2.svg)
 
 ## Tech Stack
 
