@@ -1,6 +1,6 @@
 # Applications API
 
-![](https://www.svgrepo.com/show/427679/bag-outline-red-2.svg)
+![](https://www.svgrepo.com/show/68289/bag.svg)
 
 ## Tech Stack
 
